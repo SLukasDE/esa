@@ -1,7 +1,7 @@
-#include <esl/examples/logging/Example01.h>
-#include <esl/examples/logging/Example02.h>
-#include <esl/examples/logging/Example03.h>
-#include <esl/examples/logging/Example04.h>
+#include <esa/examples/logging/Example01.h>
+#include <esa/examples/logging/Example02.h>
+#include <esa/examples/logging/Example03.h>
+#include <esa/examples/logging/Example04.h>
 #include <iostream>
 #include <string>
 
@@ -30,17 +30,17 @@ int main(int argc, const char *argv[]) {
 	}
 
 	if(argument == "logging-example01") {
-		esl::examples::logging::example01();
+		esl::examples::monitoring::example01();
 	}
 	else if(argument == "logging-example02") {
-		esl::examples::logging::example02();
+		esl::examples::monitoring::example02();
 	}
 	else if(argument == "logging-example03") {
-		esl::examples::logging::example03();
+		esl::examples::monitoring::example03();
 	}
 	else if(argument == "logging-example04") {
 		esl::examples::loggerInitialize();
-		esl::examples::logging::example04();
+		esl::examples::monitoring::example04();
 	}
 	else {
 		std::cout << "unknown argument \"" << argument << "\".\n\n";
