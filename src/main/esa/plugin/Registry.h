@@ -23,11 +23,10 @@ SOFTWARE.
 #ifndef ESA_PLUGIN_REGISTRY_H_
 #define ESA_PLUGIN_REGISTRY_H_
 
+#include <esa/monitoring/Logging.h>
 #include <esa/object/Object.h>
-#include <esa/plugin/BasePlugin.h>
 #include <esa/plugin/exception/PluginNotFound.h>
 #include <esa/plugin/Library.h>
-#include <esa/plugin/Plugin.h>
 
 #include <map>
 #include <memory>
@@ -78,13 +77,26 @@ namespace esa {
 inline namespace v1_6 {
 namespace plugin {
 
-class Registry final {
-	friend class Library;
+class Registry final : public object::Object {
 public:
-	template <typename Interface>
-	using Factory = std::unique_ptr<Interface> (*)(const std::vector<std::pair<std::string, std::string>>& settings);
+	friend class Library;
 
-	using BasePlugins = std::map<std::string, std::unique_ptr<const BasePlugin>>;
+	template <typename Interface>
+	using CreateFunction = std::unique_ptr<Interface> (*)(const std::vector<std::pair<std::string, std::string>>& settings);
+
+	template<typename Interface>
+	struct Plugin : object::Object {
+		Plugin(CreateFunction<Interface> aCreateFunction)
+		: createFunction(aCreateFunction)
+		{ }
+
+		CreateFunction<Interface> createFunction;
+	};
+	using BasePlugins = std::map<std::string, std::unique_ptr<const object::Object>>;
+
+	/* ************* *
+	 * Initial stuff *
+	 * ************* */
 
 	~Registry();
 
@@ -92,68 +104,43 @@ public:
 	static void set(Registry& registry);
 	static void cleanup();
 
-	template <typename Object>
-	static Object* findObject();
-
-	template <typename Object>
-	static void setObject(std::unique_ptr<Object> object);
-
 	void dump(std::ostream& ostream) const;
+
+
+	/* ****************** *
+	 * Object store stuff *
+	 * ****************** */
+
+	template <typename ObjectType>
+	ObjectType* findObject();
+
+	template <class ObjectType>
+	void setObject(std::unique_ptr<ObjectType> object);
+
+
+	/* ********************* *
+	 * Plugin registry stuff *
+	 * ********************* */
 
 	template <typename Interface>
 	std::unique_ptr<Interface> create(const std::string& implementation, const std::vector<std::pair<std::string, std::string>>& settings) const;
 
-	template <class Interface>
-	const BasePlugins& getPlugins() const;
 	const BasePlugins& getPlugins(std::type_index typeIndex) const;
 
-	template <typename Interface>
-	const Factory<Interface> findFactory() const noexcept;
-
-	template <typename Interface>
-	const Factory<Interface> findFactory(const std::string& implementation) const noexcept;
-
-	template <typename Interface>
-	const Factory<Interface> getFactory() const;
-
-	template <typename Interface>
-	const Factory<Interface> getFactory(const std::string& implementation) const;
-
 	template <class Interface>
-	const Plugin<Interface>* findPlugin() const noexcept;
+	void addPlugin(const std::string& implementation, CreateFunction<Interface> createFunction);
 
-	template <class Interface>
-	const Plugin<Interface>* findPlugin(const std::string& implementation) const noexcept;
-
-	template <class Interface>
-	const Plugin<Interface>& getPlugin() const;
-
-	template <class Interface>
-	const Plugin<Interface>& getPlugin(const std::string& implementation) const;
-
-	template <class Interface>
-	void addPlugin(const std::string& implementation, std::unique_ptr<Interface> (*createFunction)(const std::vector<std::pair<std::string, std::string>>&));
-
-	template <class Interface, class ReturnValue, std::unique_ptr<ReturnValue> (*CreateFunction)(const std::vector<std::pair<std::string, std::string>>&)>
+	template <class Interface, class ReturnValue, std::unique_ptr<ReturnValue> (*createFunction)(const std::vector<std::pair<std::string, std::string>>&)>
 	void addPlugin(const std::string& implementation);
-/*
-	template <class Interface>
-	void copyPlugin(const std::string& implementationSource, const std::string& implementationDestination);
-*/
+
 	void loadPlugin(const std::string& path, const char* data = 0);
 	void loadPlugin(std::unique_ptr<Library> library, const char* data = 0);
 
 private:
 	Registry() = default;
 
-	const BasePlugin* findBasePlugin(const std::string& implementation, std::type_index typeIndex) const noexcept;
-	const BasePlugin* findBasePlugin(std::type_index typeIndex) const noexcept;
-
-	template <class Interface, class Implementation>
-	static std::unique_ptr<Interface> createImplementationFunction(const std::vector<std::pair<std::string, std::string>>& settings);
-
 	template <class Interface, class ReturnValue, std::unique_ptr<ReturnValue> (*createFunction)(const std::vector<std::pair<std::string, std::string>>&)>
-	static std::unique_ptr<Interface> createInterface(const std::vector<std::pair<std::string, std::string>>& settings);
+	static std::unique_ptr<Interface> createFunctionCasted(const std::vector<std::pair<std::string, std::string>>& settings);
 
 	std::vector<std::unique_ptr<Library>> libraries;
 
@@ -164,127 +151,63 @@ private:
 };
 
 
-template<typename Object>
-Object* Registry::findObject() {
-	auto iter = get().objects.find(typeid(Object));
-	return (iter == get().objects.end()) ? nullptr : static_cast<Object*>(iter->second.get());
+template<typename ObjectType>
+ObjectType* Registry::findObject() {
+	auto iter = objects.find(std::type_index(typeid(ObjectType)));
+	return (iter == objects.end()) ? nullptr : static_cast<ObjectType*>(iter->second.get());
 }
 
-template<typename Object>
-void Registry::setObject(std::unique_ptr<Object> object) {
-	if(object) {
-		get().objects[typeid(Object)] = std::move(object);
+template <class ObjectType>
+void Registry::setObject(std::unique_ptr<ObjectType> object) {
+	if(std::type_index(typeid(ObjectType)) == std::type_index(typeid(monitoring::Logging))) {
+		// The monitoring::Logging cannot be changed, because every Logger has a pointer to this object.
+		objects.insert(std::make_pair(std::type_index(typeid(monitoring::Logging)), std::move(object)));
+	}
+	else if(object) {
+		objects[std::type_index(typeid(ObjectType))] = std::move(object);
 	}
 	else {
-		get().objects.erase(typeid(Object));
+		objects.erase(std::type_index(typeid(ObjectType)));
 	}
 }
 
 template <typename Interface>
 std::unique_ptr<Interface> Registry::create(const std::string& implementation, const std::vector<std::pair<std::string, std::string>>& settings) const {
-	return getFactory<Interface>(implementation)(settings);
-}
+	auto typePluginsIter = typePlugins.find(std::type_index(typeid(Interface)));
+	if(typePluginsIter == typePlugins.end()) {
+		throw plugin::exception::PluginNotFound(std::type_index(typeid(Interface)), implementation);
+	}
 
-template <class Interface>
-const Registry::BasePlugins& Registry::getPlugins() const {
-	return getPlugins(typeid(Interface));
-}
+	const BasePlugins& basePlugins = typePluginsIter->second;
+	auto basePluginsIter = basePlugins.find(implementation);
+	if(basePluginsIter == basePlugins.end()) {
+		throw plugin::exception::PluginNotFound(std::type_index(typeid(Interface)), implementation);
+	}
 
-template <typename Interface>
-const Registry::Factory<Interface> Registry::findFactory() const noexcept {
-	const Plugin<Interface>* plugin = findPlugin<Interface>();
-	return plugin ? plugin->create : nullptr;
-}
-
-template <typename Interface>
-const Registry::Factory<Interface> Registry::findFactory(const std::string& implementation) const noexcept {
-	const Plugin<Interface>* plugin = findPlugin<Interface>(implementation);
-	return plugin ? plugin->create : nullptr;
-}
-
-template <typename Interface>
-const Registry::Factory<Interface> Registry::getFactory() const {
-	const Plugin<Interface>* plugin = findPlugin<Interface>();
+	const Plugin<Interface>* plugin = static_cast<const Plugin<Interface>*>(basePluginsIter->second.get());
 	if(!plugin) {
-		throw plugin::exception::PluginNotFound(typeid(Interface));
+		throw plugin::exception::PluginNotFound(std::type_index(typeid(Interface)), implementation);
 	}
 
-	if(!plugin->create) {
-		throw std::runtime_error("Cannot get factory for type \"" + std::string(typeid(Interface).name()) + "\"");
-	}
-	return plugin->create;
-}
-
-template <typename Interface>
-const Registry::Factory<Interface> Registry::getFactory(const std::string& implementation) const {
-	const Plugin<Interface>* plugin = findPlugin<Interface>(implementation);
-	if(!plugin) {
-		throw plugin::exception::PluginNotFound(typeid(Interface), implementation);
-	}
-
-	if(!plugin->create) {
+	if(!plugin->createFunction) {
 		throw std::runtime_error("Cannot get factory for implementation \"" + implementation + "\" and type \"" + std::string(typeid(Interface).name()) + "\"");
 	}
-	return plugin->create;
+	return plugin->createFunction(settings);
 }
 
 template <class Interface>
-const Plugin<Interface>* Registry::findPlugin() const noexcept {
-	return static_cast<const Plugin<Interface>*>(findBasePlugin(typeid(Interface)));
-}
-
-template <class Interface>
-const Plugin<Interface>* Registry::findPlugin(const std::string& implementation) const noexcept {
-	return static_cast<const Plugin<Interface>*>(findBasePlugin(implementation, typeid(Interface)));
-}
-
-template <class Interface>
-const Plugin<Interface>& Registry::getPlugin() const {
-	const Plugin<Interface>* plugin = findPlugin<Interface>();
-
-	if(plugin == nullptr) {
-		throw plugin::exception::PluginNotFound(typeid(Interface));
-	}
-
-	return *plugin;
-}
-
-template <class Interface>
-const Plugin<Interface>& Registry::getPlugin(const std::string& implementation) const {
-	const Plugin<Interface>* plugin = findPlugin<Interface>(implementation);
-
-	if(plugin == nullptr) {
-		throw plugin::exception::PluginNotFound(typeid(Interface), implementation);
-	}
-
-	return *plugin;
-}
-
-template <class Interface>
-void Registry::addPlugin(const std::string& implementation, std::unique_ptr<Interface> (*createFunction)(const std::vector<std::pair<std::string, std::string>>&)) {
-	std::unique_ptr<const BasePlugin> basePlugin(new Plugin<Interface>(implementation, createFunction));
-	typePlugins[typeid(Interface)][implementation] = std::move(basePlugin);
-}
-
-template <class Interface, class ReturnValue, std::unique_ptr<ReturnValue> (*CreateFunction)(const std::vector<std::pair<std::string, std::string>>&)>
-void Registry::addPlugin(const std::string& implementation) {
-	//typePlugins[typeid(Interface)][implementation] = std::unique_ptr<const BasePlugin>(new Plugin<Interface>(implementation, typeid(Interface) == typeid(ReturnValue) ? CreateFunction : createInterface<Interface, ReturnValue, CreateFunction>));
-	typePlugins[typeid(Interface)][implementation] = std::unique_ptr<const BasePlugin>(new Plugin<Interface>(implementation, createInterface<Interface, ReturnValue, CreateFunction>));
-}
-
-/*
-template <class Interface>
-void Registry::copyPlugin(const std::string& implementationSource, const std::string& implementationDestination) {
-	addPlugin<Interface>(implementationDestination, getPlugin<Interface>(implementationSource).create);
-}
-*/
-template <class Interface, class Implementation>
-std::unique_ptr<Interface> Registry::createImplementationFunction(const std::vector<std::pair<std::string, std::string>>& settings) {
-	return std::unique_ptr<Interface>(new Implementation(settings));
+void Registry::addPlugin(const std::string& implementation, CreateFunction<Interface> createFunction) {
+	std::unique_ptr<const object::Object> basePlugin(new Plugin<Interface>(createFunction));
+	typePlugins[std::type_index(typeid(Interface))][implementation] = std::move(basePlugin);
 }
 
 template <class Interface, class ReturnValue, std::unique_ptr<ReturnValue> (*createFunction)(const std::vector<std::pair<std::string, std::string>>&)>
-std::unique_ptr<Interface> Registry::createInterface(const std::vector<std::pair<std::string, std::string>>& settings) {
+void Registry::addPlugin(const std::string& implementation) {
+	typePlugins[std::type_index(typeid(Interface))][implementation] = std::unique_ptr<const object::Object>(new Plugin<Interface>(createFunctionCasted<Interface, ReturnValue, createFunction>));
+}
+
+template <class Interface, class ReturnValue, std::unique_ptr<ReturnValue> (*createFunction)(const std::vector<std::pair<std::string, std::string>>&)>
+std::unique_ptr<Interface> Registry::createFunctionCasted(const std::vector<std::pair<std::string, std::string>>& settings) {
 	return createFunction(settings);
 }
 

@@ -22,8 +22,6 @@ SOFTWARE.
 
 #include <esa/plugin/Registry.h>
 
-//#include <new>         // placement new
-//#include <type_traits> // aligned_storage
 #include <utility>
 
 namespace esa {
@@ -31,27 +29,28 @@ inline namespace v1_6 {
 namespace plugin {
 
 namespace {
-//typename std::aligned_storage<sizeof(Registry), alignof(Registry)>::type registryBuffer; // memory for the object;
-
 std::unique_ptr<Registry> registryUnique;
 Registry* registryPtr = nullptr;
-
 const Registry::BasePlugins emptyBasePlugings;
-
 }  /* anonymous namespace */
 
 Registry::~Registry() {
+	for(auto& object : objects) {
+		// The monitoring::Logging is the last object to be deleted, because every Logger has a pointer to this object.
+		if(object.first == typeid(monitoring::Logging)) {
+			continue;
+		}
+		object.second.reset();
+	}
 	objects.clear();
+
+	if(registryPtr == this) {
+		registryPtr = nullptr;
+	}
 }
 
 Registry& Registry::get() {
 	if(registryPtr == nullptr) {
-		/* ***************** *
-		 * initialize module *
-		 * ***************** */
-
-		//registryPtr = reinterpret_cast<Registry*> (&registryBuffer);
-		//new (registryPtr) Registry; // placement new
 		registryUnique.reset(new Registry);
 		registryPtr = registryUnique.get();
 	}
@@ -97,33 +96,6 @@ void Registry::loadPlugin(std::unique_ptr<Library> library, const char* data) {
 	library->install(*this, data);
 	libraries.push_back(std::move(library));
 }
-
-const BasePlugin* Registry::findBasePlugin(const std::string& implementation, std::type_index typeIndex) const noexcept {
-	auto typePluginsIter = typePlugins.find(typeIndex);
-	if(typePluginsIter == typePlugins.end()) {
-		return nullptr;
-	}
-
-	const BasePlugins& basePlugins = typePluginsIter->second;
-	auto basePluginsIter = basePlugins.find(implementation);
-	return basePluginsIter == basePlugins.end() ? nullptr : basePluginsIter->second.get();
-}
-
-const BasePlugin* Registry::findBasePlugin(std::type_index typeIndex) const noexcept {
-	auto typePluginsIter = typePlugins.find(typeIndex);
-	if(typePluginsIter == typePlugins.end()) {
-		return nullptr;
-	}
-
-	const BasePlugins& basePlugins = typePluginsIter->second;
-	auto basePluginsIter = basePlugins.begin();
-	if(basePluginsIter == basePlugins.end()) {
-		return nullptr;
-	}
-
-	return basePluginsIter->second.get();
-}
-
 } /* namespace plugin */
 } /* inline namespace v1_6 */
 } /* namespace esa */
