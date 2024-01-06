@@ -81,8 +81,14 @@ Streams::Real::operator bool() const {
 }
 
 Streams::Writer Streams::Real::getWriter(const void* object, const char* function, const char* file, unsigned int lineNo) {
-	Location location(level, object, typeName, function, file, lineNo, std::this_thread::get_id());
-	return Writer(logging ? logging->createOStream(location) : plugin::Registry::get().findObject<Logging>() ? plugin::Registry::get().findObject<Logging>()->createOStream(location) : nullptr);
+	if(!logging) {
+		logging = plugin::Registry::get().findObject<Logging>();
+	}
+	if(!logging) {
+		return Writer(nullptr);
+	}
+
+	return Writer(logging->createOStream(Location(level, object, typeName, function, file, lineNo, std::this_thread::get_id())));
 }
 
 } /* namespace monitoring */
