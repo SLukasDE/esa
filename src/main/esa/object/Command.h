@@ -20,27 +20,27 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#ifndef ESA_OBJECT_CONTROL_H_
-#define ESA_OBJECT_CONTROL_H_
+#ifndef ESA_OBJECT_COMMAND_H_
+#define ESA_OBJECT_COMMAND_H_
 
 #include <esa/object/Object.h>
 
 #include <memory>
 #include <string>
-#include <utility>
-#include <vector>
+//#include <utility>
+//#include <vector>
 
 namespace esa {
 inline namespace v1_6 {
 namespace object {
 
-class Control : public virtual Object {
+class Command : public virtual Object {
 public:
-	virtual std::vector<std::pair<std::string, std::unique_ptr<Object>>> doControl(const std::string& command, const std::vector<std::pair<std::string, std::unique_ptr<Object>>>& arguments) const = 0;
+	virtual std::unique_ptr<Object> runCommand(const std::string& command, Object* argument) = 0;
 };
 
 } /* namespace object */
 } /* inline namespace v1_6 */
 } /* namespace esa */
 
-#endif /* ESA_OBJECT_CONTROL_H_ */
+#endif /* ESA_OBJECT_COMMAND_H_ */
