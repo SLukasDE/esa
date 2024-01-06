@@ -20,14 +20,14 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#include <esa/utility/Signal.h>
+#include <esa/system/Signal.h>
 
 namespace esa {
 inline namespace v1_6 {
 namespace utility {
 
 template<>
-const std::string& Signal::toString(SignalType signalType) noexcept {
+const std::string& system::Signal::toString(system::SignalType signalType) noexcept {
 	static const std::string strEmpty;
 	static const std::string strUnknown = "unknown";
 	static const std::string strHangUp = "hangUp";
@@ -49,46 +49,46 @@ const std::string& Signal::toString(SignalType signalType) noexcept {
 	static const std::string strKill = "kill";
 
 	switch(signalType) {
-	case unknown:
+	case system::SignalType::unknown:
 		return strUnknown;
-	case hangUp:
+	case system::SignalType::hangUp:
 		return strHangUp;
-	case interrupt:
+	case system::SignalType::interrupt:
 		return strInterrupt;
-	case quit:
+	case system::SignalType::quit:
 		return strQuit;
-	case ill:
+	case system::SignalType::ill:
 		return strIll;
-	case trap:
+	case system::SignalType::trap:
 		return strTrap;
-	case abort:
+	case system::SignalType::abort:
 		return strAbort;
-	case busError:
+	case system::SignalType::busError:
 		return strBusError;
-	case floatingPointException:
+	case system::SignalType::floatingPointException:
 		return strFloatingPointException;
-	case segmentationViolation:
+	case system::SignalType::segmentationViolation:
 		return strSegmentationViolation;
-	case user1:
+	case system::SignalType::user1:
 		return strUser1;
-	case user2:
+	case system::SignalType::user2:
 		return strUser2;
-	case alarm:
+	case system::SignalType::alarm:
 		return strAlarm;
-	case child:
+	case system::SignalType::child:
 		return strChild;
-	case stackFault:
+	case system::SignalType::stackFault:
 		return strStackFault;
-	case terminate:
+	case system::SignalType::terminate:
 		return strTerminate;
-	case pipe:
+	case system::SignalType::pipe:
 		return strPipe;
-	case kill:
+	case system::SignalType::kill:
 		return strKill;
 	}
 	return strEmpty;
 }
 
-} /* namespace utility */
+} /* namespace system */
 } /* inline namespace v1_6 */
 } /* namespace esa */

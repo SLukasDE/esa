@@ -23,12 +23,12 @@ SOFTWARE.
 #ifndef ESA_SYSTEM_PROCESS_H_
 #define ESA_SYSTEM_PROCESS_H_
 
+#include <esa/object/Object.h>
 #include <esa/system/Transceiver.h>
 #include <esa/system/Arguments.h>
 #include <esa/system/Environment.h>
 #include <esa/system/FileDescriptor.h>
-#include <esa/object/Object.h>
-#include <esa/utility/Signal.h>
+#include <esa/system/Signal.h>
 
 #include <memory>
 #include <string>
@@ -52,7 +52,7 @@ public:
 
 	virtual int execute(Arguments arguments) const = 0;
 
-	virtual void sendSignal(const utility::Signal& signal) const = 0;
+	virtual void sendSignal(const Signal& signal) const = 0;
 	virtual const void* getNativeHandle() const = 0;
 };
 

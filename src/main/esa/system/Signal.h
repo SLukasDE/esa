@@ -23,24 +23,42 @@ SOFTWARE.
 #ifndef ESA_SYSTEM_SIGNAL_H_
 #define ESA_SYSTEM_SIGNAL_H_
 
-#include <esa/object/Object.h>
-#include <esa/utility/Signal.h>
+#include <esa/utility/Enum.h>
 
-#include <functional>
-#include <memory>
+#include <string>
 
 namespace esa {
 inline namespace v1_6 {
 namespace system {
 
-class Signal : public object::Object {
-public:
-	using Handler = std::unique_ptr<object::Object>;
-
-	virtual Handler createHandler(const utility::Signal& signal, std::function<void()> function) = 0;
+enum SignalType {
+    unknown,
+	hangUp, // ?, controlling terminal closed
+    interrupt, // interrupt process stream, ctrl-C
+    quit,      // like ctrl-C but with a core dump, interruption by error in code, ctl-/
+	ill,
+	trap,
+	abort,
+	busError,
+	floatingPointException,
+	segmentationViolation,
+	user1,
+	user2,
+	alarm,
+	child,
+	stackFault,
+    terminate, // terminate whenever/soft kill, typically sends SIGHUP as well?
+    pipe,
+	kill       // terminate immediately/hard kill, use when 15 doesn't work or when something disasterous might happen if process is allowed to cont., kill -9
 };
-
+using Signal = utility::Enum<SignalType, SignalType::unknown>;
 } /* namespace system */
+
+namespace utility {
+template<>
+const std::string& system::Signal::toString(system::SignalType signalType) noexcept;
+} /* namespace utility */
+
 } /* inline namespace v1_6 */
 } /* namespace esa */
 
