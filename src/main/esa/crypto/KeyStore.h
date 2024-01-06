@@ -23,16 +23,19 @@ SOFTWARE.
 #ifndef ESA_CRYPTO_KEYSTORE_H_
 #define ESA_CRYPTO_KEYSTORE_H_
 
+#include <esa/object/Object.h>
+
+#include <string>
+#include <vector>
+
 namespace esa {
 inline namespace v1_6 {
 namespace crypto {
 
-#include <esa/object/Object.h>
-//#include <esa/plugin/Plugin.h>
-
-class IKeyStore : public object::Object {
+class KeyStore : public object::Object {
 public:
-//	using Plugin = plugin::Plugin<IKeyStore>;
+	virtual void addCertificate(const std::string& hostname, const std::vector<unsigned char>& certificate) = 0;
+	virtual void addPrivateKey(const std::string& hostname, const std::vector<unsigned char>& key, const std::string& password) = 0;
 };
 
 } /* namespace crypto */

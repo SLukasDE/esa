@@ -24,7 +24,6 @@ SOFTWARE.
 #define ESA_CRYPTO_PUBLICKEY_H_
 
 #include <esa/object/Object.h>
-//#include <esa/plugin/Plugin.h>
 
 #include <string>
 
@@ -34,8 +33,6 @@ namespace crypto {
 
 class PublicKey : public object::Object {
 public:
-	//using Plugin = plugin::Plugin<PublicKey>;
-
 	virtual std::string getX509_DER() const = 0;
 	virtual std::string getX509_PEM() const = 0;
 

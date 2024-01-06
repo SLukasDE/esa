@@ -27,8 +27,8 @@ SOFTWARE.
 #include <esa/object/Object.h>
 
 #include <functional>
-#include <string>
-#include <vector>
+//#include <string>
+//#include <vector>
 
 namespace esa {
 inline namespace v1_6 {
@@ -38,8 +38,6 @@ namespace server {
 
 class Socket : public virtual object::Object {
 public:
-	virtual void addTLSHost(const std::string& hostname, std::vector<unsigned char> certificate, std::vector<unsigned char> key) = 0;
-
 	/* this method is blocking. */
 	virtual void listen(const RequestHandler& requestHandler) = 0;
 

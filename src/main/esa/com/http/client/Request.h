@@ -44,6 +44,7 @@ public:
 			std::initializer_list<std::pair<const std::string, std::string>> requestHeaders = {});
 	Request(std::string path, utility::HttpMethod method, utility::MIME contentType,
 			std::map<std::string, std::string> requestHeaders);
+	Request() = default;
 	Request(const Request&) = default;
 	Request(Request&& other) = default;
 

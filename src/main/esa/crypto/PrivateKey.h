@@ -29,15 +29,12 @@ namespace crypto {
 
 #include <esa/crypto/PublicKey.h>
 #include <esa/object/Object.h>
-//#include <esa/plugin/Plugin.h>
 
 #include <memory>
 #include <string>
 
 class PrivateKey : public object::Object {
 public:
-	//using Plugin = plugin::Plugin<PrivateKey>;
-
 	virtual std::string getX509_DER(const std::string& password) const = 0;
 	virtual std::string getX509_PEM(const std::string& password) const = 0;
 
