@@ -23,7 +23,6 @@ SOFTWARE.
 #ifndef ESA_LOGGER_H_
 #define ESA_LOGGER_H_
 
-//#include <esa/monitoring/Level.h>
 #include <esa/monitoring/Streams.h>
 #include <esa/monitoring/Logger.h>
 

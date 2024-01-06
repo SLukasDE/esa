@@ -26,9 +26,7 @@ SOFTWARE.
 #include <esa/com/http/server/Response.h>
 #include <esa/io/Output.h>
 
-#include <boost/filesystem.hpp>
-
-#include <memory>
+#include <string>
 
 namespace esa {
 inline namespace v1_6 {
@@ -42,7 +40,7 @@ public:
 	virtual ~Connection() = default;
 
 	virtual bool send(const Response& response, io::Output output) = 0;
-	virtual bool send(const Response& response, boost::filesystem::path path) = 0;
+	virtual bool sendFile(const Response& response, const std::string& path) = 0;
 };
 
 } /* namespace server */
