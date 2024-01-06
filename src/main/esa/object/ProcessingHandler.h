@@ -24,14 +24,13 @@ SOFTWARE.
 #define ESA_OBJECT_PROCESSINGHANDLER_H_
 
 #include <esa/com/common/server/RequestHandler.h>
-#include <esa/object/Event.h>
 #include <esa/object/Procedure.h>
 
 namespace esa {
 inline namespace v1_6 {
 namespace object {
 
-struct ProcessingHandler : public com::common::server::RequestHandler, public Event, public Procedure { };
+struct ProcessingHandler : public com::common::server::RequestHandler, public Procedure { };
 
 } /* namespace object */
 } /* inline namespace v1_6 */
