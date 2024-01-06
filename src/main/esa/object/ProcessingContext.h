@@ -26,8 +26,6 @@ SOFTWARE.
 #include <esa/object/Context.h>
 #include <esa/object/ProcessingHandler.h>
 
-#include <boost/filesystem/path.hpp>
-
 #include <string>
 
 
@@ -37,16 +35,9 @@ namespace object {
 
 class ProcessingContext : public ProcessingHandler, public Context {
 public:
-	virtual void addData(const std::string& configuration) = 0;
-	virtual void addFile(const boost::filesystem::path& filename) = 0;
-
 	virtual int getReturnCode() const = 0;
 
 	virtual void setParentObjectContext(Context* aParentObject) = 0;
-
-	//virtual ProcessingContext& addData(const std::string& configuration) = 0;
-	//virtual ProcessingContext& addFile(const boost::filesystem::path& filename) = 0;
-
 	virtual void addAlias(const std::string& destinationId, const std::string& sourceId) = 0;
 
 	inline void addReference(const std::string& sourceId) {
