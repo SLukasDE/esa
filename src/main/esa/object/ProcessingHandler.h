@@ -30,6 +30,16 @@ namespace esa {
 inline namespace v1_6 {
 namespace object {
 
+/* TODO: Braucht man den Typ?
+ *       Oder käme man nicht aus mit com::common::server::RequestHandler ?
+ *
+ * Statt:
+ * class ProcessingContext : public Context, public ProcessingHandler { ... }
+ *
+ * Müsste es dann heißen:
+ * class ProcessingContext : public Context, public Procedure, public com::common::server::RequestHandler { ... }
+ *
+ */
 struct ProcessingHandler : public com::common::server::RequestHandler, public Procedure { };
 
 } /* namespace object */

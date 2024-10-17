@@ -28,8 +28,6 @@ SOFTWARE.
 #include <esa/monitoring/Layout.h>
 #include <esa/monitoring/Streams.h>
 
-#include <boost/filesystem/path.hpp>
-
 #include <memory>
 #include <ostream>
 #include <string>
@@ -61,7 +59,7 @@ public:
 	virtual void flush(std::ostream* oStream) = 0;
 
 	virtual void addData(const std::string& configuration) = 0;
-	virtual void addFile(const boost::filesystem::path& filename) = 0;
+	virtual void addFile(const std::string& filename) = 0;
 
 	virtual void addLayout(const std::string& id, std::unique_ptr<Layout> layout) = 0;
 

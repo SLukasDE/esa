@@ -30,7 +30,7 @@ inline namespace v1_6 {
 namespace database {
 namespace {
 std::vector<Column> emptyColumns;
-monitoring::Logger<monitoring::Streams::Level::TRACE> logger("esl::database::PreparedBulkStatement");
+monitoring::Logger<monitoring::Streams::Level::trace> logger("esl::database::PreparedBulkStatement");
 }
 
 PreparedBulkStatement::PreparedBulkStatement(std::unique_ptr<Binding> aBinding)

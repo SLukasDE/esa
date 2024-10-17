@@ -40,12 +40,12 @@ class Logging;
 class Streams {
 public:
 	enum class Level {
-		TRACE,
-		DEBUG,
-		INFO,
-		WARN,
-		ERROR,
-		SILENT
+		trace,
+		debug,
+		info,
+		warn,
+		error,
+		silent
 	};
 
 	class Real;
@@ -200,7 +200,7 @@ public:
     	}
 
     	std::chrono::time_point<std::chrono::system_clock> timestamp = std::chrono::system_clock::now();
-    	Level level = Level::SILENT;
+    	Level level = Level::silent;
     	const void* object = nullptr;
     	const char* typeName = nullptr;
     	const char* function = nullptr;

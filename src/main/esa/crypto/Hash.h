@@ -20,52 +20,24 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#ifndef ESA_IO_OUTPUT_H_
-#define ESA_IO_OUTPUT_H_
+#ifndef ESA_CRYPTO_HASH_H_
+#define ESA_CRYPTO_HASH_H_
 
-#include <esa/io/Producer.h>
-#include <esa/io/Reader.h>
+#include <esa/object/Object.h>
 
-#include <memory>
+#include <string>
 
 namespace esa {
 inline namespace v1_6 {
-namespace io {
+namespace crypto {
 
-class Output final {
+class Hash : public object::Object {
 public:
-	Output() = default;
-/*
-	Output(Producer& producer, Reader& reader);
-	Output(Reader& reader, Producer& producer);
-*/
-	Output(Reader& reader);
-	Output(Producer& producer);
-
-	Output(std::unique_ptr<Reader> reader);
-	Output(std::unique_ptr<Producer> producer);
-
-	Output(const Output&) = delete;
-	Output(Output&& other);
-
-	Output& operator=(const Output&) = delete;
-	Output& operator=(Output&& other);
-
-	explicit operator bool() const noexcept;
-
-	Producer& getProducer() const;
-	Reader& getReader() const;
-
-private:
-	std::unique_ptr<Producer> producerGenerated;
-	std::unique_ptr<Reader> readerGenerated;
-
-	Producer* producer = nullptr;
-	Reader* reader = nullptr;
+	virtual std::string calculateHash(const std::string& data, const std::string& algorithm /*= "SHA256"*/) const = 0;
 };
 
-} /* namespace io */
+} /* namespace crypto */
 } /* inline namespace v1_6 */
 } /* namespace esa */
 
-#endif /* ESA_IO_OUTPUT_H_ */
+#endif /* ESA_CRYPTO_HASH_H_ */

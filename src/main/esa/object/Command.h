@@ -27,8 +27,6 @@ SOFTWARE.
 
 #include <memory>
 #include <string>
-//#include <utility>
-//#include <vector>
 
 namespace esa {
 inline namespace v1_6 {

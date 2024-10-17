@@ -1,7 +1,5 @@
-#include <esa/examples/logging/Example01.h>
-#include <esa/examples/logging/Example02.h>
-#include <esa/examples/logging/Example03.h>
-#include <esa/examples/logging/Example04.h>
+#include <esa/examples/monitoring/Example01.h>
+
 #include <iostream>
 #include <string>
 
@@ -9,18 +7,12 @@
 void printUsage() {
 	std::cout << "Possible arguments:\n\n";
 	std::cout << "  logging-example01\n";
-	std::cout << "  logging-example02\n";
-	std::cout << "  logging-example03\n";
-	std::cout << "  logging-example04\n";
 }
 
 int main(int argc, const char *argv[]) {
 	std::string argument;
 
-	if(argc < 2) {
-		argument = "logging-example04";
-	}
-	else if(argc == 2) {
+	if(argc == 2) {
 		argument = argv[1];
 	}
 	else {
@@ -30,17 +22,7 @@ int main(int argc, const char *argv[]) {
 	}
 
 	if(argument == "logging-example01") {
-		esl::examples::monitoring::example01();
-	}
-	else if(argument == "logging-example02") {
-		esl::examples::monitoring::example02();
-	}
-	else if(argument == "logging-example03") {
-		esl::examples::monitoring::example03();
-	}
-	else if(argument == "logging-example04") {
-		esl::examples::loggerInitialize();
-		esl::examples::monitoring::example04();
+		esa::examples::monitoring::example01();
 	}
 	else {
 		std::cout << "unknown argument \"" << argument << "\".\n\n";

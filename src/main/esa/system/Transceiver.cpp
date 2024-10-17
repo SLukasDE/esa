@@ -33,9 +33,9 @@ void Transceiver::operator>>(io::Input&& aInput) {
 	inputPath = "";
 }
 
-void Transceiver::operator>>(boost::filesystem::path path) {
+void Transceiver::operator>>(const std::string& path) {
 	input = io::Input();
-	inputPath = std::move(path);
+	inputPath = path;
 }
 
 void Transceiver::operator<<(io::Output&& aOutput) {
@@ -43,16 +43,16 @@ void Transceiver::operator<<(io::Output&& aOutput) {
 	outputPath = "";
 }
 
-void Transceiver::operator<<(boost::filesystem::path path) {
+void Transceiver::operator<<(const std::string& path) {
 	output = io::Output();
-	outputPath = std::move(path);
+	outputPath = path;
 }
 
 const io::Input& Transceiver::getInput() const noexcept {
 	return input;
 }
 
-const boost::filesystem::path& Transceiver::getInputPath() const noexcept {
+const std::string& Transceiver::getInputPath() const noexcept {
 	return inputPath;
 }
 
@@ -60,7 +60,7 @@ const io::Output& Transceiver::getOutput() const noexcept {
 	return output;
 }
 
-const boost::filesystem::path& Transceiver::getOutputPath() const noexcept {
+const std::string& Transceiver::getOutputPath() const noexcept {
 	return outputPath;
 }
 

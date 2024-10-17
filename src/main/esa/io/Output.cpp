@@ -35,7 +35,7 @@ inline namespace v1_6 {
 namespace io {
 
 namespace {
-monitoring::Logger<monitoring::Streams::Level::TRACE> logger("esl::io::Output");
+monitoring::Logger<monitoring::Streams::Level::trace> logger("esa::io::Output");
 
 class ProducerReader : public Producer {
 public:
@@ -295,14 +295,14 @@ Output::operator bool() const noexcept {
 	return producer != nullptr && reader != nullptr;
 }
 
-Producer& Output::getProducer() const noexcept {
+Producer& Output::getProducer() const {
 	if(producer == nullptr) {
         throw std::runtime_error("calling Output::getProducer() but object is empty.");
 	}
 	return *producer;
 }
 
-Reader& Output::getReader() const noexcept {
+Reader& Output::getReader() const {
 	if(reader == nullptr) {
         throw std::runtime_error("calling Output::getReader() but object is empty.");
 	}

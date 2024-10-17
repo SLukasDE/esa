@@ -29,7 +29,7 @@ inline namespace v1_6 {
 namespace database {
 namespace {
 std::vector<Column> emptyColumns;
-monitoring::Logger<monitoring::Streams::Level::TRACE> logger("esl::database::PreparedStatement");
+monitoring::Logger<monitoring::Streams::Level::trace> logger("esl::database::PreparedStatement");
 }
 /*
 PreparedStatement::PreparedStatement(PreparedStatement&& other)

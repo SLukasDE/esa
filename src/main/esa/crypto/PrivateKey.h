@@ -23,28 +23,29 @@ SOFTWARE.
 #ifndef ESA_CRYPTO_PRIVATEKEY_H_
 #define ESA_CRYPTO_PRIVATEKEY_H_
 
-namespace esa {
-inline namespace v1_6 {
-namespace crypto {
-
 #include <esa/crypto/PublicKey.h>
 #include <esa/object/Object.h>
 
 #include <memory>
 #include <string>
 
+namespace esa {
+inline namespace v1_6 {
+namespace crypto {
+
 class PrivateKey : public object::Object {
 public:
+/*
 	virtual std::string getX509_DER(const std::string& password) const = 0;
 	virtual std::string getX509_PEM(const std::string& password) const = 0;
-
+*/
 	virtual std::unique_ptr<PublicKey> createPublicKey() const = 0;
-
+/*
 	virtual std::string getAlgorithmName() const = 0;
 	virtual unsigned int getAlgorithmBits() const = 0;
-
+*/
 	virtual std::string decrypt(const std::string& ciphertextStr) const = 0;
-	virtual std::string sign(const std::string& data, const std::string& algorithm = "RS512") const = 0;
+	virtual std::string sign(const std::string& data, const std::string& algorithm /*= "RS512"*/) const = 0;
 };
 
 } /* namespace crypto */

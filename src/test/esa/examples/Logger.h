@@ -5,13 +5,11 @@
 
 namespace esa {
 inline namespace v1_6 {
-namespace examples {
 
+namespace monitoring {
 extern esl::monitoring::Logger<> logger;
-void loggerInitialize();
-void loggerReplay();
+} /* namespace monitoring */
 
-} /* namespace examples */
 } /* inline namespace v1_6 */
 } /* namespace esa */
 

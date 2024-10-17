@@ -33,14 +33,15 @@ namespace crypto {
 
 class PublicKey : public object::Object {
 public:
+/*
 	virtual std::string getX509_DER() const = 0;
 	virtual std::string getX509_PEM() const = 0;
 
 	virtual std::string getAlgorithmName() const = 0;
 	virtual unsigned int getAlgorithmBits() const = 0;
-
+*/
 	virtual std::string encrypt(const std::string& plaintext) const = 0;
-	virtual bool verify(const std::string& data, const std::string& signature, const std::string& algorithm = "RS512") const = 0;
+	virtual bool verifySignature(const std::string& data, const std::string& signature, const std::string& algorithm /*= "RS512"*/) const = 0;
 };
 
 } /* namespace crypto */

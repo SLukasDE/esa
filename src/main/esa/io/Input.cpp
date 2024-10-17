@@ -35,7 +35,7 @@ inline namespace v1_6 {
 namespace io {
 
 namespace {
-monitoring::Logger<monitoring::Streams::Level::TRACE> logger("esl::io::Input");
+monitoring::Logger<monitoring::Streams::Level::trace> logger("esa::io::Input");
 
 class ConsumerWriter : public Consumer {
 public:

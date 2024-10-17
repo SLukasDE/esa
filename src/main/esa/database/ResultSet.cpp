@@ -33,7 +33,7 @@ inline namespace v1_6 {
 namespace database {
 
 namespace {
-monitoring::Logger<monitoring::Streams::Level::TRACE> logger("esl::database::ResultSet");
+monitoring::Logger<monitoring::Streams::Level::trace> logger("esa::database::ResultSet");
 }
 
 ResultSet::Binding::Binding(const std::vector<Column>& aColumns)

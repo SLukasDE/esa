@@ -33,14 +33,14 @@ template<Streams::Level level>
 struct Logger;
 
 template<>
-struct Logger<Streams::Level::TRACE> : Streams {
+struct Logger<Streams::Level::trace> : Streams {
 	Logger(const char* aTypeName)
 	: Streams(aTypeName),
-	  trace(aTypeName, Level::TRACE),
-	  debug(aTypeName, Level::DEBUG),
-	  info(aTypeName, Level::INFO),
-	  warn(aTypeName, Level::WARN),
-	  error(aTypeName, Level::ERROR)
+	  trace(aTypeName, Level::trace),
+	  debug(aTypeName, Level::debug),
+	  info(aTypeName, Level::info),
+	  warn(aTypeName, Level::warn),
+	  error(aTypeName, Level::error)
 	{ }
 
 	Real trace;
@@ -51,13 +51,13 @@ struct Logger<Streams::Level::TRACE> : Streams {
 };
 
 template<>
-struct Logger<Streams::Level::DEBUG> : Streams {
+struct Logger<Streams::Level::debug> : Streams {
 	Logger(const char* aTypeName)
 	: Streams(aTypeName),
-	  debug(aTypeName, Level::DEBUG),
-	  info(aTypeName, Level::INFO),
-	  warn(aTypeName, Level::WARN),
-	  error(aTypeName, Level::ERROR)
+	  debug(aTypeName, Level::debug),
+	  info(aTypeName, Level::info),
+	  warn(aTypeName, Level::warn),
+	  error(aTypeName, Level::error)
 	{ }
 
 	Empty trace;
@@ -68,12 +68,12 @@ struct Logger<Streams::Level::DEBUG> : Streams {
 };
 
 template<>
-struct Logger<Streams::Level::INFO> : Streams {
+struct Logger<Streams::Level::info> : Streams {
 	Logger(const char* aTypeName)
 	: Streams(aTypeName),
-	  info(aTypeName, Level::INFO),
-	  warn(aTypeName, Level::WARN),
-	  error(aTypeName, Level::ERROR)
+	  info(aTypeName, Level::info),
+	  warn(aTypeName, Level::warn),
+	  error(aTypeName, Level::error)
 	{ }
 
 	Empty trace;
@@ -84,11 +84,11 @@ struct Logger<Streams::Level::INFO> : Streams {
 };
 
 template<>
-struct Logger<Streams::Level::WARN> : Streams {
+struct Logger<Streams::Level::warn> : Streams {
 	Logger(const char* aTypeName)
 	: Streams(aTypeName),
-	  warn(aTypeName, Level::WARN),
-	  error(aTypeName, Level::ERROR)
+	  warn(aTypeName, Level::warn),
+	  error(aTypeName, Level::error)
 	{ }
 
 	Empty trace;
@@ -99,10 +99,10 @@ struct Logger<Streams::Level::WARN> : Streams {
 };
 
 template<>
-struct Logger<Streams::Level::ERROR> : Streams {
+struct Logger<Streams::Level::error> : Streams {
 	Logger(const char* aTypeName)
 	: Streams(aTypeName),
-	  error(aTypeName, Level::ERROR)
+	  error(aTypeName, Level::error)
 	{ }
 
 	Empty trace;
@@ -113,7 +113,7 @@ struct Logger<Streams::Level::ERROR> : Streams {
 };
 
 template<>
-struct Logger<Streams::Level::SILENT> : Streams {
+struct Logger<Streams::Level::silent> : Streams {
 	Logger(const char* aTypeName)
 	: Streams(aTypeName)
 	{ }

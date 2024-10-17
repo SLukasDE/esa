@@ -26,7 +26,7 @@ SOFTWARE.
 #include <esa/io/Input.h>
 #include <esa/io/Output.h>
 
-#include <boost/filesystem.hpp>
+#include <string>
 
 namespace esa {
 inline namespace v1_6 {
@@ -42,23 +42,23 @@ public:
 	Transceiver& operator=(Transceiver&& other) = delete;
 
 	void operator>>(io::Input&& input);
-	void operator>>(boost::filesystem::path path);
+	void operator>>(const std::string& path);
 
 	void operator<<(io::Output&& output);
-	void operator<<(boost::filesystem::path path);
+	void operator<<(const std::string& path);
 
 	const io::Input& getInput() const noexcept;
-	const boost::filesystem::path& getInputPath() const noexcept;
+	const std::string& getInputPath() const noexcept;
 
 	const io::Output& getOutput() const noexcept;
-	const boost::filesystem::path& getOutputPath() const noexcept;
+	const std::string& getOutputPath() const noexcept;
 
 private:
 	io::Input input;
-	boost::filesystem::path inputPath;
+	std::string inputPath;
 
 	io::Output output;
-	boost::filesystem::path outputPath;
+	std::string outputPath;
 };
 
 } /* namespace system */

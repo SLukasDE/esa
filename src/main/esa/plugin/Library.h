@@ -25,7 +25,7 @@ SOFTWARE.
 
 #include <string>
 
-#define linux
+//#define linux
 
 namespace esa {
 inline namespace v1_6 {
