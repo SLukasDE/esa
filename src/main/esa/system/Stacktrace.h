@@ -40,6 +40,20 @@ public:
 	template <class E>
 	class Injector : public E {
 	friend class Stacktrace;
+	public:
+		Injector(Injector const& e)
+		: E(e),
+		  stacktrace(e.stacktrace ? e.stacktrace->clone() : nullptr)
+		{ }
+
+		Injector& operator=(Injector const& e)
+		{
+			static_cast<E&>(*this) = e;
+			if(e.stacktrace) {
+				stacktrace = e.stacktrace->clone();
+			}
+		}
+
 	private:
 	    Injector(E const & e, std::unique_ptr<Stacktrace> aStacktrace)
 	    : E(e),
